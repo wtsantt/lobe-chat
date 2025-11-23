@@ -336,6 +336,13 @@
       "when": 1763535087148,
       "tag": "0047_add_slug_document",
       "breakpoints": true
+    },
+    {
+      "idx": 48,
+      "version": "7",
+      "when": 1763906432905,
+      "tag": "0048_unified_auth",
+      "breakpoints": true
     }
   ],
   "version": "6"

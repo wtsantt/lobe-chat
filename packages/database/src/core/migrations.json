@@ -797,5 +797,22 @@
     "bps": true,
     "folderMillis": 1763535087148,
     "hash": "57a82ce14d96ffa9f140ff63f00af994e91a74703f4d2378286e36be259f117b"
+  },
+  {
+    "sql": [
+      "CREATE TABLE IF NOT EXISTS \"accounts\" (\n\t\"access_token\" text,\n\t\"access_token_expires_at\" timestamp,\n\t\"account_id\" text NOT NULL,\n\t\"created_at\" timestamp DEFAULT now() NOT NULL,\n\t\"id\" text PRIMARY KEY NOT NULL,\n\t\"id_token\" text,\n\t\"password\" text,\n\t\"provider_id\" text NOT NULL,\n\t\"refresh_token\" text,\n\t\"refresh_token_expires_at\" timestamp,\n\t\"scope\" text,\n\t\"updated_at\" timestamp NOT NULL,\n\t\"user_id\" text NOT NULL\n);\n",
+      "\nCREATE TABLE IF NOT EXISTS \"auth_sessions\" (\n\t\"created_at\" timestamp DEFAULT now() NOT NULL,\n\t\"expires_at\" timestamp NOT NULL,\n\t\"id\" text PRIMARY KEY NOT NULL,\n\t\"ip_address\" text,\n\t\"token\" text NOT NULL,\n\t\"updated_at\" timestamp NOT NULL,\n\t\"user_agent\" text,\n\t\"user_id\" text NOT NULL,\n\tCONSTRAINT \"auth_sessions_token_unique\" UNIQUE(\"token\")\n);\n",
+      "\nCREATE TABLE IF NOT EXISTS \"verifications\" (\n\t\"created_at\" timestamp DEFAULT now() NOT NULL,\n\t\"expires_at\" timestamp NOT NULL,\n\t\"id\" text PRIMARY KEY NOT NULL,\n\t\"identifier\" text NOT NULL,\n\t\"updated_at\" timestamp DEFAULT now() NOT NULL,\n\t\"value\" text NOT NULL\n);\n",
+      "\nALTER TABLE \"files\" DROP CONSTRAINT IF EXISTS \"files_slug_unique\";",
+      "\nALTER TABLE \"documents\" ADD COLUMN IF NOT EXISTS \"slug\" varchar(255);",
+      "\nALTER TABLE \"users\" ADD COLUMN IF NOT EXISTS \"email_verified\" boolean DEFAULT false NOT NULL;",
+      "\nDO $$ BEGIN\n ALTER TABLE \"accounts\" ADD CONSTRAINT \"accounts_user_id_users_id_fk\" FOREIGN KEY (\"user_id\") REFERENCES \"public\".\"users\"(\"id\") ON DELETE cascade ON UPDATE no action;\nEXCEPTION\n WHEN duplicate_object THEN null;\nEND $$;\n",
+      "\nDO $$ BEGIN\n ALTER TABLE \"auth_sessions\" ADD CONSTRAINT \"auth_sessions_user_id_users_id_fk\" FOREIGN KEY (\"user_id\") REFERENCES \"public\".\"users\"(\"id\") ON DELETE cascade ON UPDATE no action;\nEXCEPTION\n WHEN duplicate_object THEN null;\nEND $$;\n",
+      "\nCREATE UNIQUE INDEX IF NOT EXISTS \"documents_slug_user_id_unique\" ON \"documents\" USING btree (\"slug\",\"user_id\") WHERE \"documents\".\"slug\" is not null;",
+      "\nALTER TABLE \"files\" DROP COLUMN IF EXISTS \"slug\";\n"
+    ],
+    "bps": true,
+    "folderMillis": 1763906432905,
+    "hash": "e16571f7d7aa58878e741bd721c6282074eeb992b23ffe2a6cc32843c91512fd"
   }
 ]
